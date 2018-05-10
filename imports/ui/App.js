@@ -5,6 +5,7 @@ import { withTracker } from "meteor/react-meteor-data";
 
 import PostList from "./PostList";
 import PostAdd from "./PostAdd";
+import Graph from "./Graph";
 import { Posts } from "../api/posts";
 
 
@@ -12,70 +13,59 @@ export class App extends Component {
   constructor(props) {
     super(props);
 
+    this.state={
+      agencyList:[]
+    };
+
+    this.handleSubmit= this.handleSubmit.bind(this);
+
   }
 
 
-  onVote(post, emoji) {
-    let postObj = Posts.findOne(post._id);
+  handleSubmit(event) {
 
-    if (!postObj) {
-      console.err("Post not found!");
-      return;
-    }
+    console.log("click");
+    let me = this;
 
-    postObj.voteCount+=1;
-    if (postObj.votes[emoji]===undefined) {
-      postObj.votes[emoji]=0;
-    }
-    postObj.votes[emoji]+=1;
+  //fetch 
+    fetch("http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&t=0")
+    .then((res) => {
+      return res.json();
+    })
+    .then((info) => {
+      
+      
+      var buses = [];
+      buses = info.vehicle;
+      
+      me.setState({agencyList: buses });
 
-    Posts.update(postObj._id,
-      postObj);
-  }
-
-  onAdd(text) {
-    if (!text) return;
-    Posts.insert({
-      text,
-      voteCount:0,
-      votes:{
-        "🤡":0,
-        "😡":0,
-        "😇":0,
-        "🏊":0
+      for(let i of info.agency){
+        console.log(i.id);
       }
-    });
+    })
+    .catch((err) => {if(err.status === 404){window.alert("No se puedieron recuperar los buses.")}}  );
 
   }
-
 
   render() {
     return (
       <div className="App">
-        <h1>EmojiVoter</h1>
+        <h1>Final Exam</h1>
 
-        <PostList
-          posts={this.props.posts}
-          onVote={this.onVote.bind(this)}
-          >
-        </PostList>
-        <PostAdd
-          onAdd={this.onAdd.bind(this)}
-          >
-        </PostAdd>
+        
+        <button onClick={this.handleSubmit.bind(this)}>Refresh</button>
+        <Graph posts = {this.state.agencyList}></Graph>
       </div>
     );
   }
 }
 
-App.propTypes = {
-  posts: PropTypes.array.isRequired
-};
 
 export default withTracker(
   () => {
     return {
-      posts: Posts.find({}, {sort: {voteCount:-1}}).fetch()
+      
     };
   }
 )(App);
