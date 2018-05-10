@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import * as d3 from "d3"; 
+import *  as d3Chromatic from "d3-scale-chromatic"; 
 
 
 class Graph extends Component {
 	constructor(props) {
 		super(props);
 
+		this.margin = {top: 20, right: 50, bottom: 30, left: 40};
 	}
 
 
@@ -20,14 +22,34 @@ class Graph extends Component {
 		this.width = +svg.attr("width");
 		this.height = +svg.attr("height");
 
-		this.format = d3.format(",d");
+		this.g = svg.append("g").attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-		this.color = d3.scaleOrdinal(d3.schemeCategory20c);
+		this.x = d3.scaleBand()
+		.rangeRound([0, this.width - this.margin.left - this.margin.right])
+		.paddingInner(0.05)
+		.align(0.1);
 
-		this.pack = d3.pack()
-		.size([this.width, this.height])
-		.padding(1.5);
+		this.y = d3.scaleLinear()
+		.rangeRound([this.height - this.margin.top - this.margin.bottom, 0]);
 
+		this.z = d3.scaleSequential(d3Chromatic.interpolateReds);
+
+		this.g.append("g")
+		.attr("class", "axis-x")
+		.attr("transform", "translate(0," + (this.height- this.margin.top - this.margin.bottom) + ")")
+		.call(d3.axisBottom(this.x));
+
+		this.g.append("g")
+		.attr("class", "axis-y")
+		.call(d3.axisLeft(this.y).ticks(null, "s"))
+		.append("text")
+		.attr("x", 2)
+		.attr("y", this.y(this.y.ticks().pop()) + 0.5)
+		.attr("dy", "0.32em")
+		.attr("fill", "#000")
+		.attr("font-weight", "bold")
+		.attr("text-anchor", "start")
+		.text("Added distance");
 
 		this.update(this.props); 
 
@@ -35,8 +57,10 @@ class Graph extends Component {
 
 	componentWillUpdate(newProps){
 		
+		this.g.selectAll("rect").remove();
+		this.g.select("leg").remove();
 		this.update(newProps);
-	//	console.log("wilupdate"); 
+	 
 }
 
 getDistance(lat1,lon1,lat2,lon2) {
@@ -77,83 +101,137 @@ getDistance(lat1,lon1,lat2,lon2) {
 		console.log("Update", props); 
 		console.log("State", this.svg); 
 
+//------ Distance calculation -----------------
 		
-		if (!props.posts || props.posts.length === 0) return ; 
+		if (!props.buses || props.buses.length === 0) return ; 
 
-		const buses = props.posts;
+		const buses = props.buses;
 
 		const nestedBuses = d3.nest().key((d) => d.routeTag).entries(buses);
-		console.log(nestedBuses);
+		console.log("nestedBuses: ",nestedBuses);
 
 		const afterCalc = this.distanceCalc(nestedBuses);
 		console.log(afterCalc);
 
+		let max = 0;
 
+		for (let route of afterCalc) {
 
-
-	/*
-
-			var root = d3.hierarchy({children: props.posts})
-			.sum(function(d) { return d.cal; }) 
-			.each(function(d) { 
-				if (name = d.title) {
-					var name, i = name.lastIndexOf(".");
-					d.name = name;
-					d.package = name.slice(0, i);
-					d.class = name.slice(i + 1);
+			for (let i = 1 ; i < route.values.length; i++) {
+				if(route.values.length > max){
+					max = route.values.length;
 				}
-			});
-
-			var svg = d3.select(this.svg); 
-
-			var node = svg.selectAll(".node")
-			.data(this.pack(root).leaves())
-			.enter().append("g")
-			.attr("class", "node")
-			.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-			node.append("circle")
-			.attr("id", function(d) { return d.name; })
-			.attr("r", function(d) { return 5; })
-			.style("fill", (d) => { return this.color(d.package); });
-
-			node.append("clipPath")
-			.attr("id", function(d) { return "clip-" + d.name; })
-			.append("use")
-			.attr("xlink:href", function(d) { return "#" + d.name; });
-
-			node.append("text")
-			.attr("clip-path", function(d) { return "url(#clip-" + d.name + ")"; })
-			.selectAll("tspan")
-			.data(function(d) { return d.class.split(/(?=[A-Z][^A-Z])/g); })
-			.enter().append("tspan")
-			.attr("x", 0)
-			.attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
-			.text(function(d) { return d; });
-
-			node.append("title")
-			.text((d) => { return d.name + "\n" + this.format(d.cal); });
-
-			*/
-
+			}
 		}
 
-		render() {
-			return (
-				<div> 
-				<svg width="960" 
-				height="400" 
-				ref = {(svg) => this.svg = svg}>
-				</svg>
+		console.log(max);
+		const keys = d3.range(max);
+		console.log(keys);
 
+		const stackedBuses = d3.stack()
+		.keys(keys)
+		.value((d, key) => {
+			return key < d.values.length ? d.values[key].distance : 0;
+		})(nestedBuses);
 
-				</div> 
-				); 
-		}
+		console.log(stackedBuses);
+
+//------ Drawing graph -----------------
+
+		
+		this.x.domain(nestedBuses.map(function(d) { return d.key; }));
+		this.y.domain([0, d3.max(nestedBuses, function(d) { return d.total; })]).nice();
+		this.z.domain([0, max]);
+
+		//enter
+		this.g.append("g")
+		.selectAll("g")
+		.data(stackedBuses)
+		.enter().append("g")
+		.attr("fill", (d) => { return this.z(d.key); })
+		.attr("stroke", "white")
+		.selectAll("rect")
+		.data((d) => { return d; })
+		.enter().append("rect")
+		.attr("x", (d) => { return this.x(d.data.key); })
+		.attr("y", (d) => { return this.y(d[1]); })
+		.attr("height", (d) => { return this.y(d[0]) - this.y(d[1]); })
+		.attr("width", this.x.bandwidth());
+
+		//update
+		this.g.append("g")
+		.selectAll("g")
+		.data(stackedBuses)
+		.enter().append("g")
+		.attr("fill", (d) => { return this.z(d.key); })
+		.attr("stroke", "white")
+		.selectAll("rect")
+		.data((d) => { return d; })
+		.attr("x", (d) => { return this.x(d.data.key); })
+		.attr("y", (d) => { return this.y(d[1]); })
+		.attr("height", (d) => { return this.y(d[0]) - this.y(d[1]); })
+		.attr("width", this.x.bandwidth());
+
+		this.g.select(".axis-x")
+		.transition().duration(2000)
+		.call(d3.axisBottom(this.x));
+
+		this.g.select(".axis-y")
+		.transition().duration(2000)
+		.call(d3.axisLeft(this.y).ticks(null, "s"));
+
+		var legend = this.g.append("g")
+		.attr("class", "leg")
+		.attr("font-family", "sans-serif")
+		.attr("font-size", 10)
+		.attr("text-anchor", "end")
+		.selectAll("g")
+		.data(keys.slice().reverse())
+		.enter().append("g")
+		.attr("transform", function(d, i) { return "translate(-50," + i * 20 + ")"; });
+
+		legend.append("rect")
+		.attr("x", this.width - 19)
+		.attr("width", 19)
+		.attr("height", 19)
+		.attr("fill", this.z);
+
+		legend.append("text")
+		.attr("x", this.width - 24)
+		.attr("y", 9.5)
+		.attr("dy", "0.32em")
+		.text(function(d) { return d; });
+
+		this.g.append("g")
+		.selectAll("g")
+		.data(stackedBuses)
+		.enter().append("g")
+		.attr("fill", (d) => { return this.z(d.key); })
+		.attr("stroke", "white")
+		.selectAll("rect")
+		.data((d) => { return d; })
+		.exit().remove();
+
+		
+
 	}
 
-	Graph.propTypes = {
-		posts: PropTypes.array.isRequired
-	};
+	render() {
+		return (
+			<div> 
+			<svg width="900" 
+			height="600" 
+			ref = {(svg) => this.svg = svg}>
+			</svg>
 
-	export default(Graph);
+
+			</div> 
+			); 
+	}
+}
+
+Graph.propTypes = {
+	buses: PropTypes.array.isRequired
+};
+
+export default(Graph);
