@@ -14,10 +14,7 @@ class Graph extends Component {
 
 
 	componentDidMount(){
-		console.log(this.props);
-
 		
-
 		const svg = d3.select(this.svg);
 		this.width = +svg.attr("width");
 		this.height = +svg.attr("height");
@@ -60,13 +57,13 @@ class Graph extends Component {
 		this.g.selectAll("rect").remove();
 		this.g.select(".leg").remove();
 		this.update(newProps);
-	 
-}
-
-getDistance(lat1,lon1,lat2,lon2) {
-	function deg2rad(deg) {
-		return deg * (Math.PI/180);
+		
 	}
+
+	getDistance(lat1,lon1,lat2,lon2) {
+		function deg2rad(deg) {
+			return deg * (Math.PI/180);
+		}
 
 	    var R = 6371; // Radius of the earth in km
 	    var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -97,50 +94,48 @@ getDistance(lat1,lon1,lat2,lon2) {
 
 	update (props){
 
-
-		console.log("Update", props); 
 		
 //------ Distance calculation -----------------
-		
-		if (!props.buses || props.buses.length === 0) return ; 
 
-		const buses = props.buses;
+if (!props.buses || props.buses.length === 0) return ; 
 
-		const nestedBuses = d3.nest().key((d) => d.routeTag).entries(buses);
-		console.log(nestedBuses.length);
+const buses = props.buses;
 
-		const afterCalc = this.distanceCalc(nestedBuses);
-		
+const nestedBuses = d3.nest().key((d) => d.routeTag).entries(buses);
 
-		let max = 0;
 
-		for (let route of afterCalc) {
+const afterCalc = this.distanceCalc(nestedBuses);
 
-			for (let i = 1 ; i < route.values.length; i++) {
-				if(route.values.length > max){
-					max = route.values.length;
-				}
-			}
+
+let max = 0;
+
+for (let route of afterCalc) {
+
+	for (let i = 1 ; i < route.values.length; i++) {
+		if(route.values.length > max){
+			max = route.values.length;
 		}
+	}
+}
 
-		
-		const keys = d3.range(max);
-		
 
-		const stackedBuses = d3.stack()
-		.keys(keys)
-		.value((d, key) => {
-			return key < d.values.length ? d.values[key].distance : 0;
-		})(nestedBuses);
+const keys = d3.range(max);
 
-		
+
+const stackedBuses = d3.stack()
+.keys(keys)
+.value((d, key) => {
+	return key < d.values.length ? d.values[key].distance : 0;
+})(nestedBuses);
+
+
 
 //------ Drawing graph -----------------
 
-		
-		this.x.domain(nestedBuses.map(function(d) { return d.key; }));
-		this.y.domain([0, d3.max(nestedBuses, function(d) { return d.total; })]).nice();
-		this.z.domain([0, max]);
+
+this.x.domain(nestedBuses.map(function(d) { return d.key; }));
+this.y.domain([0, d3.max(nestedBuses, function(d) { return d.total; })]).nice();
+this.z.domain([0, max]);
 
 		//enter
 		this.g.append("g")
@@ -218,12 +213,7 @@ getDistance(lat1,lon1,lat2,lon2) {
 	render() {
 		return (
 			<div> 
-			<svg width="1100" 
-			height="550" 
-			ref = {(svg) => this.svg = svg}>
-			</svg>
-
-
+			  <svg width="1100" height="500" ref = {(svg) => this.svg = svg}> </svg>
 			</div> 
 			); 
 	}

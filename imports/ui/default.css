@@ -3,6 +3,14 @@
 		padding: 0px;
 	}
 
+	#realT hr{
+		width: 50%;
+	}
+
+	#login-buttons .text-besides-image {
+	    margin-left: 20px;
+	}
+
 	html, body
 	{
 		height: 100%;
@@ -186,6 +194,8 @@
 /*********************************************************************************/
 /* Button Style                                                                  */
 /*********************************************************************************/
+	
+	
 
 	.button
 	{
@@ -409,7 +419,7 @@
 	#banner2
 	{
 		overflow: hidden;
-		padding: 2em 5em 1.2em 3em;
+		padding: 2em 5em 2em 3em;
 		background-color: #9F241A;
 		background-size: cover;
 		text-align: right;
@@ -518,8 +528,14 @@
 
 	#featured a
 	{
-		color: rgba(255,255,255,1);
+		color: rgba(255,255,255,1); 
+		
 	}
+
+	#bot a{
+		color: #9F241A; 
+	}
+
 	
 	#featured .button
 	{
@@ -556,6 +572,7 @@
 		margin-top: 40px;
 		margin-right: 20px;
 		color: #000;
+		border-radius: 5px;
 	}
 
 	

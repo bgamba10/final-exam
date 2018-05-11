@@ -15,19 +15,17 @@ export default class PostList extends Component {
   renderPosts() {
     return this.props.posts.map((p,i) =>
       <Post
-        
-        key={i}
-        post={p}>
+      key={i}
+      post={p}>
       </Post>
-    );
+      );
   }
   render() {
     return (
       <div className="PostList">
-        
-        {this.renderPosts()}
+      {this.renderPosts()}
       </div>
-    );
+      );
   }
 }
 

@@ -11,7 +11,6 @@ export default class Post extends Component {
 
   }
 
-
   render() {
     return (
       <div className="box col-sm-4">

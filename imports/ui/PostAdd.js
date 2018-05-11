@@ -16,7 +16,7 @@ export default class PostAdd extends Component {
 
   render() {
     return (
-      <div className="PostAdd">
+      <div className="PostAdd" id="bot" >
         <div>
         <textarea
           id="texto"
@@ -32,7 +32,7 @@ export default class PostAdd extends Component {
               this.clearContents(this);
               }
           }
-        >Add
+        ><a href="#extra">Add</a>
         </button>
       </div>
     );
