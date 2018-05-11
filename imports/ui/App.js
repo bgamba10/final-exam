@@ -158,7 +158,7 @@ render() {
     </div>
     <div id="banner">
 
-      <div class="container">
+      <div className="container">
         <div class="title">
 
           <h1>Muni Distance</h1>
@@ -166,7 +166,7 @@ render() {
           where you can see a cool graph of the distance between 
           buses in the differente Muni routes in San Francisco!</span> </div>
         <ul class="actions">
-          <li><a href="#extra" class="button">Get Started</a></li>
+          <li><a href="#page" class="button">Get Started</a></li>
         </ul>
       </div>
     </div>
