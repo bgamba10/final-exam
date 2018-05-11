@@ -9,6 +9,8 @@ import Graph from "./Graph";
 import { Posts } from "../api/posts";
 
 import { Session } from 'meteor/session';
+import "./default.css";
+import "./fonts.css";
 
 export class App extends Component {
   constructor(props) {
@@ -140,6 +142,8 @@ handleChange(e){
 //&#39;
 
 hrefRoute(){
+
+
   let route = "https://www.sfmta.com/routes/";
   route = route + this.state.selectValue.toLowerCase();
   console.log(route);
@@ -149,28 +153,81 @@ hrefRoute(){
 render() {
   return (
     <div className="App">
-    <h1>Muni Distance</h1>
-
+    <div id="banner2">
     <AccountsUIWrapper/>
-    <Graph buses = {this.state.agencyList}></Graph>
-    <h4>Feeling the urge to comment about a route?</h4>
-    <h5>Select the one you&#39;re looking for</h5>
-    <select id="route-selection" onChange={this.handleChange.bind(this)} >
-    <option value="Select a route">Select a route</option>
-    {this.state.routesList.map((p,i) =>  <option value={p.title}> {p.title}</option>)}
-    </select>
-    <h4>Do you want to check the route real time?</h4>
-    <h5>Don&#39;t hesitate <a target="_blank" href={this.hrefRoute()}>CLICK HERE</a></h5>
-
-    <PostList
-    posts={this.props.posts} route={this.state.selectValue}
-    >
-    </PostList>
-    <PostAdd
-    onAdd={this.onAdd.bind(this)}
-    >
-    </PostAdd>
     </div>
+    <div id="banner">
+
+      <div class="container">
+        <div class="title">
+
+          <h1>Muni Distance</h1>
+          <span class="byline">Welcome to Muni Distance 
+          where you can see a cool graph of the distance between 
+          buses in the differente Muni routes in San Francisco!</span> </div>
+        <ul class="actions">
+          <li><a href="#extra" class="button">Get Started</a></li>
+        </ul>
+      </div>
+    </div>
+
+    
+
+    <div id="page" class="container">
+      <div class="title">
+        <h2>Distance Graph</h2>
+        <span class="byline">Welcome to the distance graph, get to know the distance between the Munis in the same route.</span> </div>
+      
+        
+    <Graph buses = {this.state.agencyList}></Graph>
+    </div>
+
+
+    
+  
+
+    <div id="featured">
+      <div class="container">
+       
+        
+      
+      <div className= "row">
+      <div className="col-sm-6">
+      <h3>Feeling the urge to comment about a route?</h3>
+      <h4>Select the one you&#39;re looking for</h4>
+      <select id="route-selection" onChange={this.handleChange.bind(this)} >
+      <option value="Select a route">Select a route</option>
+
+      {this.state.routesList.map((p,i) =>  <option value={p.title}> {p.title}</option>)}
+      </select>
+      <PostAdd
+      onAdd={this.onAdd.bind(this)}
+      >
+      </PostAdd>
+      </div>
+      <div className="col-sm-6">
+      <h2>Do you want to check the route real time?</h2>
+      <h3>Don&#39;t hesitate <a target="_blank" href={this.hrefRoute()}>CLICK HERE</a> and check the live map!</h3>
+      </div>
+      </div>
+      </div>
+    </div>
+
+
+    <div id="extra" class="container">
+    <div class="title">
+      <h2>{this.state.selectValue}</h2>
+    </div>
+    <div className="row">
+      
+      <PostList posts={this.props.posts} route={this.state.selectValue}></PostList>
+    </div>
+    <ul class="actions">
+      <li><a href="#" class="button">Back Top</a></li>
+    </ul>
+  </div>
+      </div>
+    
     );
 }
 }

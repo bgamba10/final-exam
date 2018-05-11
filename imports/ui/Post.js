@@ -14,7 +14,7 @@ export default class Post extends Component {
 
   render() {
     return (
-      <div className="Post">
+      <div className="box col-sm-4">
         <div>{this.props.post.who.profile.name}</div>
         <div>{this.props.post.text}</div>
         

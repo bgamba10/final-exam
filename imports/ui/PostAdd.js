@@ -13,15 +13,18 @@ export default class PostAdd extends Component {
   clearContents(element) {
     this.refs.text.value = ''; 
   }
-  
+
   render() {
     return (
       <div className="PostAdd">
+        <div>
         <textarea
+          id="texto"
           type="text"
-          placeholder="Text"
+          placeholder="Comment here!"
           ref="text"/>
-        <button className="my-btn-2"
+          </div>
+        <button className="button"
           onClick={
             () =>
               {

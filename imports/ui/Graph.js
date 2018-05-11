@@ -218,8 +218,8 @@ getDistance(lat1,lon1,lat2,lon2) {
 	render() {
 		return (
 			<div> 
-			<svg width="900" 
-			height="600" 
+			<svg width="1100" 
+			height="550" 
 			ref = {(svg) => this.svg = svg}>
 			</svg>
 

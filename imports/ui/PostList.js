@@ -24,7 +24,7 @@ export default class PostList extends Component {
   render() {
     return (
       <div className="PostList">
-        <h2>Comments for {this.props.route}</h2>
+        
         {this.renderPosts()}
       </div>
     );
