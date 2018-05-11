@@ -9,6 +9,11 @@ export default class PostAdd extends Component {
 
     };
   }
+
+  clearContents(element) {
+    this.refs.text.value = ''; 
+  }
+  
   render() {
     return (
       <div className="PostAdd">
@@ -16,10 +21,13 @@ export default class PostAdd extends Component {
           type="text"
           placeholder="Text"
           ref="text"/>
-        <button
+        <button className="my-btn-2"
           onClick={
             () =>
-              this.props.onAdd(this.refs.text.value)
+              {
+              this.props.onAdd(this.refs.text.value);
+              this.clearContents(this);
+              }
           }
         >Add
         </button>

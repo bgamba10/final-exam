@@ -24,3 +24,4 @@ meteorhacks:inject-initial
 accounts-ui
 accounts-google
 google-config-ui
+session

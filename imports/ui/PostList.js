@@ -15,7 +15,7 @@ export default class PostList extends Component {
   renderPosts() {
     return this.props.posts.map((p,i) =>
       <Post
-        onVote={this.props.onVote}
+        
         key={i}
         post={p}>
       </Post>
@@ -24,7 +24,7 @@ export default class PostList extends Component {
   render() {
     return (
       <div className="PostList">
-        <h2>Posts:</h2>
+        <h2>Comments for {this.props.route}</h2>
         {this.renderPosts()}
       </div>
     );
@@ -32,6 +32,6 @@ export default class PostList extends Component {
 }
 
 PostList.propTypes = {
-  posts: PropTypes.array.isRequired,
-  onVote: PropTypes.func.isRequired
+  posts: PropTypes.array.isRequired
+  
 };

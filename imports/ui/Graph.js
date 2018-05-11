@@ -58,7 +58,7 @@ class Graph extends Component {
 	componentWillUpdate(newProps){
 		
 		this.g.selectAll("rect").remove();
-		this.g.select("leg").remove();
+		this.g.select(".leg").remove();
 		this.update(newProps);
 	 
 }
@@ -99,8 +99,7 @@ getDistance(lat1,lon1,lat2,lon2) {
 
 
 		console.log("Update", props); 
-		console.log("State", this.svg); 
-
+		
 //------ Distance calculation -----------------
 		
 		if (!props.buses || props.buses.length === 0) return ; 
@@ -108,10 +107,10 @@ getDistance(lat1,lon1,lat2,lon2) {
 		const buses = props.buses;
 
 		const nestedBuses = d3.nest().key((d) => d.routeTag).entries(buses);
-		console.log("nestedBuses: ",nestedBuses);
+		console.log(nestedBuses.length);
 
 		const afterCalc = this.distanceCalc(nestedBuses);
-		console.log(afterCalc);
+		
 
 		let max = 0;
 
@@ -124,9 +123,9 @@ getDistance(lat1,lon1,lat2,lon2) {
 			}
 		}
 
-		console.log(max);
+		
 		const keys = d3.range(max);
-		console.log(keys);
+		
 
 		const stackedBuses = d3.stack()
 		.keys(keys)
@@ -134,7 +133,7 @@ getDistance(lat1,lon1,lat2,lon2) {
 			return key < d.values.length ? d.values[key].distance : 0;
 		})(nestedBuses);
 
-		console.log(stackedBuses);
+		
 
 //------ Drawing graph -----------------
 
