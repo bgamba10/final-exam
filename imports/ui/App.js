@@ -230,6 +230,7 @@ App.propTypes = {
 
 export default withTracker(
   () => {
+    Meteor.subscribe("posts");
     return {
       posts: Posts.find({route: Session.get("route")}).fetch()
     };

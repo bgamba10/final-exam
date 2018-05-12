@@ -57,7 +57,7 @@ class Graph extends Component {
 		this.g.selectAll("rect").remove();
 		this.g.select(".leg").remove();
 		this.update(newProps);
-		
+
 	}
 
 	getDistance(lat1,lon1,lat2,lon2) {
@@ -88,7 +88,9 @@ class Graph extends Component {
 					+route.values[i].lat, +route.values[i].lon);
 				route.total += route.values[i].distance;
 			}
+			route.values = route.values.sort((md1, md2) => md1.distance - md2.distance);
 		}
+
 		return nestedBuses.sort(function(a, b) { return b.total - a.total; });
 	}
 
@@ -104,8 +106,7 @@ const buses = props.buses;
 const nestedBuses = d3.nest().key((d) => d.routeTag).entries(buses);
 
 
-const afterCalc = this.distanceCalc(nestedBuses);
-
+let afterCalc = this.distanceCalc(nestedBuses);
 
 let max = 0;
 
