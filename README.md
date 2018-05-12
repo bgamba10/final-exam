@@ -18,6 +18,8 @@ meteor
 ## Motivation
 This is a project for a [web development class](http://johnguerra.co/classes/webDevelopment_spring_2018/) in [Uniandes](https://www.uniandes.edu.co). The objective is to make a quick project using **Meteor with React**.
 
+Part of the motivation was to find a bug in the visualization, graphs are supposed to be organized and clear for the user. In this case, the graph wasn't clear, because it was hard to tell the difference between the distances. In order to fix it, you just needed to sort the distances of a route.
+
 ## Contributing
 If anyone wants to give me any help or ideas, you can by making new [Issues](https://github.com/bgamba10/final-exam/issues) or a [Pull requests](https://github.com/bgamba10/final-exam/pulls).
 
