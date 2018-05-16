@@ -1,7 +1,11 @@
 
 # Muni Distance
 
-Welcome to Muni Distance where you can see a cool graph of the distance between buses in the differente Muni routes in San Francisco!
+Welcome to Muni Distance where you can see a cool graph of the distance between buses in the differente Muni routes in San Francisco! You can also comment about any route (don't forget to sign in with google before making a comment) and see what people say about this route. 
+
+### And last but not least! There's a creative addition!
+
+When you select a route to see the comments you have the option to go the the Muni web site, and see the live map of the route you selected. So don't leave the site without giving it a try.
 
 ## Visit us!
 Currently our app is hosted in heroku. Please check it out .. [click here!](http://muni-distance.herokuapp.com)
@@ -25,7 +29,6 @@ If anyone wants to give me any help or ideas, you can by making new [Issues](htt
 
 ## Author 
 **Bibiana Gamba** 👩🏽‍🎨
-
 
 
 ## License
